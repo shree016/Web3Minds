@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -49,9 +48,15 @@ const FeaturedPostCard = ({ post }: { post: BlogPost }) => {
             </div>
           </div>
         </div>
-        <Button as="a" href={post.url} target="_blank" className="gap-2">
-          Read Article <ExternalLink className="h-4 w-4" />
-        </Button>
+        <a 
+          href={post.url} 
+          target="_blank" 
+          rel="noopener noreferrer"
+        >
+          <Button className="w-full gap-2">
+            Read Article <ExternalLink className="h-4 w-4" />
+          </Button>
+        </a>
       </div>
     </div>
   );
@@ -89,9 +94,15 @@ const BlogCard = ({ post }: { post: BlogPost }) => {
             {post.date}
           </div>
         </div>
-        <Button as="a" href={post.url} target="_blank" variant="outline" className="w-full gap-2">
-          Read Article <ExternalLink className="h-4 w-4" />
-        </Button>
+        <a 
+          href={post.url} 
+          target="_blank" 
+          rel="noopener noreferrer"
+        >
+          <Button variant="outline" className="w-full gap-2">
+            Read Article <ExternalLink className="h-4 w-4" />
+          </Button>
+        </a>
       </div>
     </div>
   );
