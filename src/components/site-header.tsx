@@ -70,9 +70,11 @@ export function SiteHeader() {
               ))}
             </ul>
             <ThemeToggle />
-            <Button variant="gradient" size="sm">
-              Join Us
-            </Button>
+            <Link to="/join">
+              <Button variant="gradient" size="sm">
+                Join Us
+              </Button>
+            </Link>
           </nav>
         )}
       </div>
@@ -98,9 +100,11 @@ export function SiteHeader() {
                 </li>
               ))}
               <li className="mt-4 animate-slide-in-right" style={{ animationDelay: `${navItems.length * 0.05}s` }}>
-                <Button variant="gradient" className="w-full">
-                  Join Us
-                </Button>
+                <Link to="/join" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="gradient" className="w-full">
+                    Join Us
+                  </Button>
+                </Link>
               </li>
             </ul>
           </nav>
