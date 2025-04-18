@@ -1,10 +1,8 @@
-
 import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
-
-
+import { useState } from "react";
 
 const events = [
   {
@@ -19,15 +17,14 @@ const events = [
     description: "Learn the fundamentals of blockchain technology and its applications.",
     isUpcoming: true,
   },
- 
 ];
 
-const EventCard = ({ event }: { event: typeof events[0] }) => {
+const EventCard = ({ event, openModal }: { event: typeof events[0], openModal: () => void }) => {
   return (
     <div className="bg-card rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-shadow">
       <div className="h-48 bg-muted flex items-center justify-center">
-        <img 
-          src={event.image} 
+        <img
+          src={event.image}
           alt={event.title}
           className="w-full h-full object-cover"
         />
@@ -60,7 +57,7 @@ const EventCard = ({ event }: { event: typeof events[0] }) => {
         <p className="text-sm text-muted-foreground mb-4">
           {event.description}
         </p>
-        <Button variant={event.isUpcoming ? "gradient" : "outline"} className="w-full">
+        <Button onClick={openModal} variant={event.isUpcoming ? "gradient" : "outline"} className="w-full">
           {event.isUpcoming ? "Register Now" : "View Recap"}
         </Button>
       </div>
@@ -69,6 +66,11 @@ const EventCard = ({ event }: { event: typeof events[0] }) => {
 };
 
 const Events = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   return (
     <Layout>
       <div className="container py-12 md:py-20">
@@ -84,32 +86,30 @@ const Events = () => {
             <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
             <TabsTrigger value="past">Past Events</TabsTrigger>
           </TabsList>
-          
-         
 
           <TabsContent value="upcoming">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {events
                 .filter(event => event.isUpcoming)
                 .map(event => (
-                  <EventCard key={event.id} event={event} />
-                ))
-              }
+                  <EventCard key={event.id} event={event} openModal={openModal} />
+                ))}
             </div>
           </TabsContent>
-          
+
           <TabsContent value="past">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {events
                 .filter(event => !event.isUpcoming)
                 .map(event => (
-                  <EventCard key={event.id} event={event} />
-                ))
-              }
+                  <EventCard key={event.id} event={event} openModal={openModal} />
+                ))}
             </div>
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Pass the modal state and handler to the Join component */}
     </Layout>
   );
 };

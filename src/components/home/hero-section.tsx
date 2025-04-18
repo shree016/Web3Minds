@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const words = ["Tech.", "Community.", "Growth."];
+const words = ["Tech.", "Community.", "Innovation."];
 
 export function HeroSection() {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -82,12 +82,12 @@ export function HeroSection() {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            <Link to="/join">
+            {/* <Link to="/join">
               <Button size="lg" variant="gradient" className="group">
                 Join our community
                 <ArrowRight className="ml-1 group-hover:translate-x-1 transition-transform" />
               </Button>
-            </Link>
+            </Link> */}
             {/* <Link to="/projects">
               <Button size="lg" variant="outline">
                 Explore our projects

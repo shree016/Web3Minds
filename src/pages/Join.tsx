@@ -1,14 +1,28 @@
-
 import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "@/components/ui/use-toast";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient"; // Import the Supabase client
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -17,15 +31,18 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email.",
   }),
+  contact: z.string().min(10, {
+    message: "Please enter a valid phone number.",
+  }),
   university: z.string().min(2, {
     message: "University must be at least 2 characters.",
   }),
   interests: z.string().min(2, {
-    message: "Please tell us what you're interested in.",
+    message: "Please tell us why you are interested in this event.",
   }),
 });
 
-const Join = () => {
+const Join = ({ isOpen, closeModal }: { isOpen: boolean; closeModal: () => void }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -33,156 +50,144 @@ const Join = () => {
     defaultValues: {
       name: "",
       email: "",
+      contact: "",
       university: "",
       interests: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // In a real app, this would connect to your backend
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    
-    // Show success toast
-    toast({
-      title: "Application submitted!",
-      description: "Thanks for your interest in joining WYDE. We'll be in touch soon!",
-    });
-    
-    // Open success dialog
-    setIsSubmitted(true);
-    
-    // Reset form
-    form.reset();
+
+    // Insert data into Supabase
+    const { data, error } = await supabase
+      .from("tblUsers") // Replace 'registrations' with your table name
+      .insert([
+        {
+          name: values.name,
+          email: values.email,
+          contact: values.contact,
+          university: values.university,
+          interests: values.interests,
+        },
+      ]);
+
+    if (error) {
+      toast({
+        title: "Error submitting the application",
+        description: error.message,
+      });
+    } else {
+      toast({
+        title: "Application submitted!",
+        description:
+          "Thanks for your interest will send you a confirmation email if your application is accepted.",
+      });
+      setIsSubmitted(true);
+      closeModal(); // Close the modal
+      form.reset(); // Reset the form
+    }
   }
 
   return (
-    <Layout>
-      <div className="container py-12 md:py-20">
-        <h1 className="text-4xl md:text-5xl font-bold mb-8 bg-gradient-primary text-transparent bg-clip-text animate-gradient-shift bg-[length:200%_auto]">
-          Join WYDE
-        </h1>
+    <Dialog open={isOpen} onOpenChange={closeModal}>
+      <DialogContent className="max-w-xl">
+        <DialogHeader>
+          <DialogTitle>WYDE</DialogTitle>
+          <DialogDescription>
+            Fill in the form to get registered for the event.
+          </DialogDescription>
+        </DialogHeader>
 
-        <div className="grid md:grid-cols-2 gap-12">
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Become a Part of Our Community</h2>
-            <p className="text-lg mb-6">
-              WYDE is a vibrant community of tech enthusiasts, developers, designers, and innovators. 
-              By joining us, you'll get access to:
-            </p>
-            <ul className="space-y-2 mb-6">
-              <li className="flex items-start">
-                <span className="mr-2 text-primary">✓</span>
-                <span>Workshops and hands-on learning sessions</span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2 text-primary">✓</span>
-                <span>Networking opportunities with industry professionals</span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2 text-primary">✓</span>
-                <span>Collaborative projects to build your portfolio</span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2 text-primary">✓</span>
-                <span>Mentorship from experienced developers</span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2 text-primary">✓</span>
-                <span>Hackathon participation and team formation</span>
-              </li>
-            </ul>
-          </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Your full name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div className="bg-gradient-card p-1 rounded-lg">
-            <div className="bg-background rounded-lg p-6">
-              <h2 className="text-2xl font-bold mb-6">Application Form</h2>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Your full name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="your.email@example.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="university"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>University/College</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Where do you study?" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="interests"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Areas of Interest</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Web development, AI, design, etc." {...field} />
-                        </FormControl>
-                        <FormDescription>
-                          What technologies or areas are you most excited about?
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <Button type="submit" variant="gradient" className="w-full">
-                    Submit Application
-                  </Button>
-                </form>
-              </Form>
-            </div>
-          </div>
-        </div>
-      </div>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="your.email@example.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-      <Dialog open={isSubmitted} onOpenChange={setIsSubmitted}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Application Received!</DialogTitle>
-            <DialogDescription>
-              Thanks for your interest in joining WYDE. Our team will review your application and get back to you soon.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-center">
-            <Button variant="default" onClick={() => setIsSubmitted(false)}>
-              Close
+            <FormField
+              control={form.control}
+              name="contact"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contact</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Mobile number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="university"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Organization/University</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Where do you study?" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="interests"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Why do you want to attend this event?</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Web development, AI, design, etc."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Once your application is accepted, you will receive a confirmation email.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit" variant="gradient" className="w-full">
+              Submit Application
             </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </Layout>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 };
 
