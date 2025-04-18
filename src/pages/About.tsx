@@ -9,7 +9,7 @@ const About = () => {
         
         <section className="mb-16">
           <h2 className="text-3xl font-bold mb-6">Our Story</h2>
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-1 gap-8">
             <div>
               <p className="text-lg mb-4">
                 WYDE was founded in 2024 by a group of passionate students who wanted to create a community where technology enthusiasts could learn, collaborate, and grow together.
@@ -52,7 +52,7 @@ const About = () => {
 
         <section>
           <h2 className="text-3xl font-bold mb-6 text-center">Our Team</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {Array.from({ length: 3 }).map((_, index) => (
               <div key={index} className="flex flex-col items-center">
                 <div className="w-32 h-32 bg-muted rounded-full mb-4"></div>
