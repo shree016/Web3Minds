@@ -150,7 +150,10 @@ const PartnerCard = ({ partner }: { partner: typeof partners[0] }) => {
 const Partners = () => {
   return (
     <Layout>
-      <div className="container py-12 md:py-20">
+       <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-primary text-center p-3 text-transparent bg-clip-text animate-gradient-shift bg-[length:200%_auto]">
+         This page is under construction<br /> Please check back later.
+        </h1>
+      {/* <div className="container py-12 md:py-20">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-primary text-transparent bg-clip-text animate-gradient-shift bg-[length:200%_auto]">
           Our Partners
         </h1>
@@ -225,7 +228,7 @@ const Partners = () => {
             Contact Us
           </Button>
         </div>
-      </div>
+      </div> */}
     </Layout>
   );
 };

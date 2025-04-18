@@ -4,81 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
 
-const eventCategories = ["All", "Workshops", "Hackathons", "Talks", "Networking"];
+
 
 const events = [
   {
     id: 1,
-    title: "React State Management Workshop",
+    title: "Blockchain Basics Workshop",
     date: "May 15, 2025",
     time: "3:00 PM - 5:00 PM",
-    location: "Tech Hub, Building 3",
+    location: "KLE SNC Campus",
     category: "Workshops",
-    attendees: 45,
-    image: "/placeholder.svg",
-    description: "Learn modern state management techniques in React with Redux Toolkit, Context API, and Zustand.",
+    attendees: "300+",
+    image: "https://media.istockphoto.com/id/963145218/photo/blockchain-financial-technology-concept-network-encrypted-chain-of-blocks-earth.jpg?s=612x612&w=0&k=20&c=k4QH9IS24y6zfPedyujLtUD6xlhY6vpZpAyukGmDQGU=",
+    description: "Learn the fundamentals of blockchain technology and its applications.",
     isUpcoming: true,
   },
-  {
-    id: 2,
-    title: "Summer Hackathon 2025",
-    date: "June 10-12, 2025",
-    time: "48 hours",
-    location: "Innovation Center",
-    category: "Hackathons",
-    attendees: 120,
-    image: "/placeholder.svg",
-    description: "Our flagship annual hackathon with prizes worth $5000. Open to all skill levels!",
-    isUpcoming: true,
-  },
-  {
-    id: 3,
-    title: "Tech Career Panel",
-    date: "April 28, 2025",
-    time: "6:00 PM - 8:00 PM",
-    location: "Virtual (Zoom)",
-    category: "Talks",
-    attendees: 78,
-    image: "/placeholder.svg",
-    description: "Industry professionals share insights about breaking into tech and career progression.",
-    isUpcoming: true,
-  },
-  {
-    id: 4,
-    title: "AI in Healthcare Symposium",
-    date: "March 12, 2025",
-    time: "1:00 PM - 6:00 PM",
-    location: "Medical Sciences Building",
-    category: "Talks",
-    attendees: 93,
-    image: "/placeholder.svg",
-    description: "Exploring the intersection of artificial intelligence and healthcare innovations.",
-    isUpcoming: false,
-  },
-  {
-    id: 5,
-    title: "Web3 Development Bootcamp",
-    date: "February 5-7, 2025",
-    time: "9:00 AM - 4:00 PM",
-    location: "Tech Innovation Lab",
-    category: "Workshops",
-    attendees: 32,
-    image: "/placeholder.svg",
-    description: "Three-day intensive bootcamp on blockchain development and decentralized applications.",
-    isUpcoming: false,
-  },
-  {
-    id: 6,
-    title: "Winter Networking Mixer",
-    date: "January 20, 2025",
-    time: "7:00 PM - 10:00 PM",
-    location: "The Hub Lounge",
-    category: "Networking",
-    attendees: 65,
-    image: "/placeholder.svg",
-    description: "Connect with fellow tech enthusiasts and industry professionals in a casual setting.",
-    isUpcoming: false,
-  }
+ 
 ];
 
 const EventCard = ({ event }: { event: typeof events[0] }) => {
@@ -144,15 +85,7 @@ const Events = () => {
             <TabsTrigger value="past">Past Events</TabsTrigger>
           </TabsList>
           
-          <div className="mb-6">
-            <div className="flex flex-wrap gap-2">
-              {eventCategories.map((category) => (
-                <Button key={category} variant="outline" size="sm">
-                  {category}
-                </Button>
-              ))}
-            </div>
-          </div>
+         
 
           <TabsContent value="upcoming">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

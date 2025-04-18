@@ -61,9 +61,9 @@ export function HeroSection() {
               ✨ Built by students, for the world.
             </span>
             
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-4">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl p-2 font-bold tracking-tighter mb-4">
               <span className="block mb-2">Empowering the next</span>
-              <span className="bg-gradient-primary text-transparent bg-clip-text animate-gradient-shift bg-[length:200%_auto]">
+              <span className="bg-gradient-primary text-transparent p-2 bg-clip-text animate-gradient-shift bg-[length:200%_auto]">
                 generation of innovators
               </span>
             </h1>
@@ -71,7 +71,7 @@ export function HeroSection() {
             <div className="h-16">
               <h2 className="text-2xl md:text-4xl font-semibold">
                 <span>{displayedText}</span>
-                <span className="inline-block w-1 h-8 bg-primary ml-1 animate-pulse" />
+               
               </h2>
             </div>
             
@@ -88,14 +88,14 @@ export function HeroSection() {
                 <ArrowRight className="ml-1 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/projects">
+            {/* <Link to="/projects">
               <Button size="lg" variant="outline">
                 Explore our projects
               </Button>
-            </Link>
+            </Link> */}
           </div>
           
-          <div className="flex items-center gap-8 mt-12 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+          {/* <div className="flex items-center gap-8 mt-12 animate-fade-in" style={{ animationDelay: "0.4s" }}>
             <div className="flex -space-x-3">
               {[1, 2, 3, 4].map((i) => (
                 <div
@@ -107,7 +107,7 @@ export function HeroSection() {
             <p className="text-sm text-muted-foreground">
               <span className="font-medium">500+</span> members have already joined
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

@@ -63,10 +63,10 @@ const Contact = () => {
               />
               <ContactInfo 
                 icon={<Phone className="h-5 w-5" />}
-                title="Phone"
-                content="+1 (555) 123-4567"
+                title="Bhuvan"
+                content="+91 9620684323"
               />
-              <ContactInfo 
+              {/* <ContactInfo 
                 icon={<MapPin className="h-5 w-5" />}
                 title="Office"
                 content="Tech Innovation Building, University Campus, City, State 12345"
@@ -75,7 +75,7 @@ const Contact = () => {
                 icon={<MessageSquare className="h-5 w-5" />}
                 title="Social Media"
                 content="@wydecommunity on Twitter, LinkedIn, and GitHub"
-              />
+              /> */}
             </div>
           </div>
           
@@ -127,19 +127,13 @@ const Contact = () => {
                 </Button>
               </form>
             </Card>
-            
-            <div className="mt-6 p-4 rounded-lg bg-muted">
-              <p className="text-sm text-muted-foreground">
-                By submitting this form, you agree to our Privacy Policy. We'll never share your information with third parties without your consent.
-              </p>
-            </div>
+          
           </div>
         </div>
         
-        <div className="mt-16">
+        {/* <div className="mt-16">
           <h2 className="text-2xl font-bold mb-6">Find Us</h2>
           <div className="h-80 bg-muted rounded-lg overflow-hidden">
-            {/* In a real-world implementation, you'd add a Google Maps embed here */}
             <div className="w-full h-full flex items-center justify-center bg-muted">
               <div className="text-center">
                 <MapPin className="h-10 w-10 mx-auto mb-4 text-primary" />
@@ -148,7 +142,7 @@ const Contact = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </Layout>
   );

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface EventProps {
   title: string;
@@ -16,32 +17,15 @@ interface EventProps {
 
 const events: EventProps[] = [
   {
-    title: "Web Development Workshop",
-    description: "Learn how to build modern web applications with React and Next.js",
+    title: "Blockchain Basics Workshop",
+    description: "Learn the fundamentals of blockchain technology and its applications.",
+    
     date: "May 10, 2023",
     time: "3:00 PM - 5:00 PM",
-    location: "Tech Hub, Building A",
+    location: "KLE SNC Campus",
     category: "Workshop",
-    imageSrc: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=500&h=300"
-  },
-  {
-    title: "AI Ethics Panel Discussion",
-    description: "Join our panel of experts discussing the ethical implications of AI",
-    date: "May 15, 2023",
-    time: "6:00 PM - 8:00 PM",
-    location: "Virtual",
-    category: "Speaker Session",
-    imageSrc: "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?auto=format&fit=crop&q=80&w=500&h=300"
-  },
-  {
-    title: "Hackathon: Build for Good",
-    description: "48-hour hackathon focused on solving social issues through technology",
-    date: "June 3-5, 2023",
-    time: "Starts at 9:00 AM",
-    location: "Innovation Center",
-    category: "Hackathon",
-    imageSrc: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=500&h=300"
-  }
+     imageSrc : "https://media.istockphoto.com/id/963145218/photo/blockchain-financial-technology-concept-network-encrypted-chain-of-blocks-earth.jpg?s=612x612&w=0&k=20&c=k4QH9IS24y6zfPedyujLtUD6xlhY6vpZpAyukGmDQGU=" },
+ 
 ];
 
 function EventCard({ event }: { event: EventProps }) {
@@ -107,9 +91,11 @@ export function UpcomingEvents() {
         </div>
         
         <div className="text-center mt-12">
+        <Link to="/events">
           <Button variant="outline" size="lg">
             View All Events
           </Button>
+          </Link>
         </div>
       </div>
     </section>

@@ -32,7 +32,7 @@ export function SiteFooter() {
           </ul>
         </div>
 
-        <div className="space-y-4">
+        {/* <div className="space-y-4">
           <h4 className="font-semibold">Connect</h4>
           <p className="text-muted-foreground">
             Follow us on social media or join our newsletter to stay updated.
@@ -48,11 +48,11 @@ export function SiteFooter() {
               LinkedIn
             </a>
           </div>
-        </div>
+        </div> */}
       </div>
       
       <div className="container mt-8 pt-8 border-t">
-        <div className="flex flex-col md:flex-row justify-between items-center">
+        {/* <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} Wyde. All rights reserved.
           </p>
@@ -64,7 +64,7 @@ export function SiteFooter() {
               Terms of Service
             </Link>
           </div>
-        </div>
+        </div> */}
       </div>
     </footer>
   );
