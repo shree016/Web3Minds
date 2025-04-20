@@ -17,7 +17,7 @@ const Home = () => {
     <Layout>
       <HeroSection isMenuOpen={isMenuOpen} />
       <UpcomingEvents />
-      {/* <ProjectsGallery /> */}
+      <ProjectsGallery />
       {/* <StatsCounter /> */}
       {/* <Testimonials /> */}
       <Newsletter />
