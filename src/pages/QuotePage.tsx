@@ -12,22 +12,30 @@ interface Quote {
   
     // Fetch a new quote
     const fetchQuote = async () => {
-      setLoading(true);
-      try {
-        // Fetch quote from serverless function (e.g., Vercel API route)
-        const res = await fetch("/api/quotes");
-        const data = await res.json();
-        setQuote(data);
-      } catch (error) {
-        // If there's an error, show a fallback message
-        setQuote({
-          content: "Oops! Something went wrong while fetching the quote.",
-          author: "Wyde Bot",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
+        setLoading(true);
+        try {
+          const res = await fetch("/api/quotes");
+          if (!res.ok) {
+            throw new Error("Failed to fetch quote");
+          }
+          const data = await res.json();
+          console.log("Fetched quote:", data); // Log the full response
+          if (data && data.length > 0) {
+            const { q, a } = data[0]; // Get the first quote in the array
+            setQuote({ content: q, author: a });
+          }
+        } catch (error) {
+          console.error("Error fetching quote:", error); // Log any errors
+          setQuote({
+            content: "Oops! Something went wrong while fetching the quote.",
+            author: "Wyde Bot",
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      
   
     // Fetch quote when component is mounted
     useEffect(() => {
