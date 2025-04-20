@@ -14,6 +14,8 @@ const navItems = [
   { title: "Blog", href: "/blog" },
   { title: "Partners", href: "/partners" },
   { title: "Contact", href: "/contact" },
+  { title: "Join", href: "/join" },
+  { title: "Daily Quote", href: "/daily-quote" },
 ];
 
 export function SiteHeader() {
