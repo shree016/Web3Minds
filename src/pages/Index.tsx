@@ -7,10 +7,15 @@ import { Testimonials } from "@/components/home/testimonials";
 import { StatsCounter } from "@/components/home/stats-counter";
 import { Newsletter } from "@/components/home/newsletter";
 
+
+import { useState } from "react";
+
 const Home = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <Layout>
-      <HeroSection />
+      <HeroSection isMenuOpen={isMenuOpen} />
       <UpcomingEvents />
       {/* <ProjectsGallery /> */}
       {/* <StatsCounter /> */}

@@ -14,7 +14,7 @@ const navItems = [
   { title: "Blog", href: "/blog" },
   { title: "Partners", href: "/partners" },
   { title: "Contact", href: "/contact" },
-  { title: "Join", href: "/join" },
+  // { title: "Join", href: "/join" },
   { title: "Daily Quote", href: "/daily-quote" },
 ];
 
@@ -45,7 +45,7 @@ export function SiteHeader() {
     <header
       className={cn(
         "sticky top-0 w-full border-b backdrop-blur-lg bg-background/900 transition-all",
-        isMenuOpen ? "z-[99]" : "z-50"
+        isMenuOpen ? "z-[99] backdrop-blur-lg" : "z-50"
       )}
     >
       <div className="container flex h-16 items-center justify-between">
@@ -92,12 +92,13 @@ export function SiteHeader() {
 
       {/* Mobile Menu */}
       {isMobile && isMenuOpen && (
+        
         <div className="fixed inset-0 z-40">
           {/* Dimmed overlay */}
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm z-40"
-            onClick={toggleMenu}
-          />
+  className="absolute inset-0 z-40 bg-black/30 backdrop-blur-md backdrop-saturate-150 transition-all duration-300 md:backdrop-blur-0"
+  onClick={toggleMenu}
+/>
 
           {/* Mobile nav panel */}
           <nav className="fixed top-0 left-0 z-50 pt-16 h-full w-full bg-black text-white shadow-xl animate-fade-in">

@@ -11,7 +11,7 @@ import Projects from "./pages/Projects";
 import Blog from "./pages/Blog";
 import Partners from "./pages/Partners";
 import Contact from "./pages/Contact";
-import Join from "./pages/Join";
+// import Join from "./pages/Join";
 import NotFound from "./pages/NotFound";
 import QuotePage from "./pages/QuotePage";
 

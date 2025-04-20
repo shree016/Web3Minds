@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const words = ["Tech.", "Community.", "Innovation."];
 
-export function HeroSection() {
+export function HeroSection({ isMenuOpen }: { isMenuOpen: boolean }) {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");
@@ -46,9 +46,14 @@ export function HeroSection() {
   }, [currentWordIndex, currentLetterIndex, isDeleting, typingSpeed]);
 
   return (
-    <section className="relative py-20 md:py-32 overflow-hidden">
+    <section
+    className={`relative py-20 md:py-32 overflow-hidden transition-all duration-300 ${
+      isMenuOpen ? "blur-sm pointer-events-none select-none" : ""
+    }`}
+  >
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-background -z-10" />
+      
+      <div className="absolute inset-0 bg-gradient-to-b   from-primary/5 to-background -z-10" />
       
       {/* Animated shapes */}
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl opacity-70 animate-pulse" />
@@ -113,3 +118,4 @@ export function HeroSection() {
     </section>
   );
 }
+
