@@ -9,14 +9,16 @@ const QuotePage: React.FC = () => {
   const [quote, setQuote] = useState<Quote | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // Fetch a new quote
   const fetchQuote = async () => {
     setLoading(true);
     try {
-      // Use the Vercel function to fetch the quote
+      // Fetch quote from serverless function (e.g., Vercel API route)
       const res = await fetch("/api/quotes");
       const data = await res.json();
       setQuote(data);
     } catch (error) {
+      // If there's an error, show a fallback message
       setQuote({
         content: "Oops! Something went wrong while fetching the quote.",
         author: "Wyde Bot",
@@ -26,12 +28,14 @@ const QuotePage: React.FC = () => {
     }
   };
 
+  // Fetch quote when component is mounted
   useEffect(() => {
     fetchQuote();
   }, []);
 
+  // Handle Tweet sharing
   const handleTweet = () => {
-    if (!quote) return;
+    if (!quote) return; // Ensure quote exists before sharing
     const tweetText = encodeURIComponent(`"${quote.content}" – ${quote.author}`);
     window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, "_blank");
   };
