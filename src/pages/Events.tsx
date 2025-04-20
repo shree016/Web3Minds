@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { useState } from "react";
+import Join from "@/pages/Join"; // Import modal component
 
 const events = [
   {
@@ -19,7 +20,7 @@ const events = [
   },
 ];
 
-const EventCard = ({ event, openModal }: { event: typeof events[0], openModal: () => void }) => {
+const EventCard = ({ event, openModal }: { event: typeof events[0]; openModal: () => void }) => {
   return (
     <div className="bg-card rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-shadow">
       <div className="h-48 bg-muted flex items-center justify-center">
@@ -57,7 +58,7 @@ const EventCard = ({ event, openModal }: { event: typeof events[0], openModal: (
         <p className="text-sm text-muted-foreground mb-4">
           {event.description}
         </p>
-        <Button onClick={openModal} variant={event.isUpcoming ? "gradient" : "outline"} className="w-full">
+        <Button onClick={openModal} variant={event.isUpcoming ? "default" : "outline"} className="w-full">
           {event.isUpcoming ? "Register Now" : "View Recap"}
         </Button>
       </div>
@@ -109,7 +110,8 @@ const Events = () => {
         </Tabs>
       </div>
 
-      {/* Pass the modal state and handler to the Join component */}
+      {/* Join Modal */}
+      <Join isOpen={isModalOpen} closeModal={closeModal} />
     </Layout>
   );
 };

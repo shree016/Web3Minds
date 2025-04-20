@@ -50,7 +50,7 @@ const About = () => {
           </div>
         </section>
 
-        <section>
+        {/* <section>
           <h2 className="text-3xl font-bold mb-6 text-center">Our Team</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {Array.from({ length: 3 }).map((_, index) => (
@@ -61,8 +61,9 @@ const About = () => {
               </div>
             ))}
           </div>
-        </section>
+        </section> */}
       </div>
+      
     </Layout>
   );
 };

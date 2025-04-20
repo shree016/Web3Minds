@@ -58,6 +58,13 @@ const Join = ({ isOpen, closeModal }: { isOpen: boolean; closeModal: () => void 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    const { data: existingEmails, error: checkError } = await supabase
+    .from("tblUsers")
+    .select("email")
+    .eq("email", values.email);
+
+    
+    
 
     // Insert data into Supabase
     const { data, error } = await supabase
@@ -72,7 +79,15 @@ const Join = ({ isOpen, closeModal }: { isOpen: boolean; closeModal: () => void 
         },
       ]);
 
+      if (existingEmails.length > 0) {
+        toast({ title: "This email is already entered.",
+         
+          });
+       
+       return;
+     }
     if (error) {
+     
       toast({
         title: "Error submitting the application",
         description: error.message,
