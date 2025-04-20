@@ -100,7 +100,7 @@ const Contact = () => {
               <ContactInfo
                 icon={<Mail className="h-5 w-5" />}
                 title="Email"
-                content="contact@wydecommunity.com"
+                content="team@wydecommunity.tech"
               />
               <ContactInfo
                 icon={<Phone className="h-5 w-5" />}
