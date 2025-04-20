@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import wydelogo2 from "@/public/assets/wydelogo2.png"; // Updated path
 
 const words = ["Tech.", "Community.", "Innovation."];
 
@@ -47,15 +49,29 @@ export function HeroSection({ isMenuOpen }: { isMenuOpen: boolean }) {
 
   return (
     <section
-    className={`relative py-20 md:py-32 overflow-hidden transition-all duration-300 ${
+    className={`relative py-7 md:py-10 overflow-hidden transition-all duration-300 ${
       isMenuOpen ? "blur-sm pointer-events-none select-none" : ""
     }`}
   >
       {/* Background gradient */}
+      <div className="flex items-center justify-center ">
+          <motion.img 
+            src={wydelogo2} // Updated path
+            alt="Logo 1" 
+            className="w-44 h-44 md:w-44 md:h-44 lg:w-44 lg:h-44 object-contain"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          />
+        
+         
+          
+        </div>
       
       <div className="absolute inset-0 bg-gradient-to-b   from-primary/5 to-background -z-10" />
       
       {/* Animated shapes */}
+     
+      
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl opacity-70 animate-pulse" />
       <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary/10 rounded-full blur-3xl opacity-70 animate-pulse" />
       

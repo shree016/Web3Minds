@@ -5,6 +5,8 @@ import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./theme-toggle";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import wydelogo2 from "@/public/assets/wydelogo2.png"; // Updated path
 
 const navItems = [
   { title: "Home", href: "/" },
@@ -15,7 +17,7 @@ const navItems = [
   { title: "Partners", href: "/NotFound" },
   { title: "Contact", href: "/contact" },
   // { title: "Join", href: "/join" },
-  { title: "Daily Quote", href: "/daily-quote" },
+  
 ];
 
 export function SiteHeader() {
@@ -51,7 +53,18 @@ export function SiteHeader() {
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <span className="bg-gradient-blue  bg-clip-text font-bold text-xl animate-gradient-shift bg-[length:200%_auto]">
-            WYDE
+          <div className="flex items-center justify-center ">
+          <motion.img 
+            src={wydelogo2} // Updated path
+            alt="Logo 1" 
+             className="w-16 h-16 md:w-20 md:h-20 object-contain"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          />
+        
+         
+          
+        </div>
           </span>
         </Link>
 
