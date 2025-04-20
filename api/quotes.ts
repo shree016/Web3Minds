@@ -2,7 +2,8 @@
 
 export default async function handler(req, res) {
     try {
-      const response = await fetch("https://api.quotable.io/random");
+        const response = await fetch("https://zenquotes.io/api/today");
+
       const data = await response.json();
   
       // Send the quote to the client
