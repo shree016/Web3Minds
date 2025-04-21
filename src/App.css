@@ -41,5 +41,10 @@
   color: #888;
 }
 
+/* In your CSS file */
+.menu-overlay {
+  backdrop-filter: blur(80px); /* Adjust the blur intensity here */
+}
+
 
 

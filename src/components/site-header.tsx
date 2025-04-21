@@ -16,8 +16,6 @@ const navItems = [
   { title: "Blog", href: "/blog" },
   { title: "Partners", href: "/NotFound" },
   { title: "Contact", href: "/contact" },
-  // { title: "Join", href: "/join" },
-  
 ];
 
 export function SiteHeader() {
@@ -25,12 +23,10 @@ export function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
-  // Close menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
-  // Prevent background scroll when mobile menu is open
   useEffect(() => {
     if (isMenuOpen) {
       document.body.classList.add("overflow-hidden");
@@ -52,19 +48,16 @@ export function SiteHeader() {
     >
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <span className="bg-gradient-blue  bg-clip-text font-bold text-xl animate-gradient-shift bg-[length:200%_auto]">
-          <div className="flex items-center justify-center ">
-          <motion.img 
-            src={wydelogo2} // Updated path
-            alt="Logo 1" 
-             className="w-16 h-16 md:w-20 md:h-20 object-contain"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-          />
-        
-         
-          
-        </div>
+          <span className="bg-gradient-blue bg-clip-text font-bold text-xl animate-gradient-shift bg-[length:200%_auto]">
+            <div className="flex items-center justify-center">
+              <motion.img
+                src={wydelogo2}
+                alt="Logo"
+                className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              />
+            </div>
           </span>
         </Link>
 
@@ -105,17 +98,16 @@ export function SiteHeader() {
 
       {/* Mobile Menu */}
       {isMobile && isMenuOpen && (
-        
-        <div className="fixed inset-0 z-40">
-          {/* Dimmed overlay */}
+        <div className="fixed inset-0 z-40  flex flex-col">
+          {/* Background Blur and Dim Overlay */}
           <div
-  className="absolute inset-0 z-40 bg-black/30 backdrop-blur-md backdrop-saturate-150 transition-all duration-300 md:backdrop-blur-0"
-  onClick={toggleMenu}
-/>
+            className="absolute inset-0 z-10 bg-black/30  backdrop-blur-md backdrop-saturate-150 transition-all duration-300"
+            onClick={toggleMenu}
+          />
 
           {/* Mobile nav panel */}
-          <nav className="fixed top-0 left-0 z-50 pt-16 h-full w-full bg-black text-white shadow-xl animate-fade-in">
-            <div className="container py-8">
+          <nav className="relative z-20 pt-16 h-full w-full bg-black bg-[#2c3666]   text-white shadow-xl animate-fade-in">
+            <div className="container bg-[#2c3666]  py-8">
               <ul className="flex flex-col gap-6">
                 {navItems.map((item, index) => (
                   <li
