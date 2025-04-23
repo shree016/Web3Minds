@@ -5,6 +5,8 @@ import { Calendar, Clock, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import Join from "@/pages/Join"; // Import Join component
+import event1 from "@/public/assets/event1.jpg"; // Import event image
+
 
 interface EventProps {
   title: string;
@@ -16,15 +18,24 @@ interface EventProps {
   imageSrc: string;
 }
 
+// temp code for luma
+
+const handleButtonClick = () => {
+  window.open("https://lu.ma/hahyyjpj", "_blank");
+};
+
+// temp code for luma
+
 const events: EventProps[] = [
   {
-    title: "Blockchain Basics Workshop",
-    description: "Learn the fundamentals of blockchain technology and its applications.",
-    date: "May 10, 2023",
-    time: "3:00 PM - 5:00 PM",
-    location: "KLE SNC Campus",
-    category: "Workshop",
-    imageSrc: "https://media.istockphoto.com/id/963145218/photo/blockchain-financial-technology-concept-network-encrypted-chain-of-blocks-earth.jpg?s=612x612&w=0&k=20&c=k4QH9IS24y6zfPedyujLtUD6xlhY6vpZpAyukGmDQGU=",
+    title: "Daytona - Developers Meetup",
+    description: "An evening for AI engineers, OSS contributors & dev tool builders. Talks, conversations & great company await.",
+
+    date: "April 29th, 2023",
+    time: "6:30 PM - 9:30 PM",
+    location: "Incubex INR4, Indira Nagar",
+    category: "Meetup",
+    imageSrc: event1,
   },
 ];
 
@@ -61,7 +72,17 @@ function EventCard({ event, openModal }: { event: EventProps; openModal: () => v
       </CardContent>
       
       <CardFooter className="p-4 pt-0">
-        <Button variant="outline" className="w-full" onClick={openModal}>Register Now</Button>
+
+        {/* <Button variant="outline" className="w-full" onClick={openModal}>Register Now</Button> */}
+
+  <Button
+  onClick={handleButtonClick}
+  
+  className="w-full"
+>
+Register Now
+</Button>
+
       </CardFooter>
     </Card>
   );

@@ -4,21 +4,35 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { useState } from "react";
 import Join from "@/pages/Join"; // Import modal component
+import event1 from "@/public/assets/event1.jpg"; // Import event image
 
 const events = [
   {
     id: 1,
-    title: "Blockchain Basics Workshop",
-    date: "May 15, 2025",
-    time: "3:00 PM - 5:00 PM",
-    location: "KLE SNC Campus",
-    category: "Workshops",
-    attendees: "300+",
-    image: "https://media.istockphoto.com/id/963145218/photo/blockchain-financial-technology-concept-network-encrypted-chain-of-blocks-earth.jpg?s=612x612&w=0&k=20&c=k4QH9IS24y6zfPedyujLtUD6xlhY6vpZpAyukGmDQGU=",
-    description: "Learn the fundamentals of blockchain technology and its applications.",
+    title: "Daytona - Developers Meetup",
+    date: "April 29th, 2023",
+    time: "6:30 PM - 9:30 PM",
+    location: "Incubex INR4, Indira Nagar",
+    category: "Meetup",
+    
+    image: event1,
+    description: "An evening for AI engineers, OSS contributors & dev tool builders. Talks, conversations & great company await.",
     isUpcoming: true,
   },
 ];
+
+
+
+
+// temp code for luma
+
+const handleButtonClick = () => {
+  window.open("https://lu.ma/hahyyjpj", "_blank");
+};
+
+// temp code for luma
+
+
 
 const EventCard = ({ event, openModal }: { event: typeof events[0]; openModal: () => void }) => {
   return (
@@ -50,17 +64,27 @@ const EventCard = ({ event, openModal }: { event: typeof events[0]; openModal: (
             <MapPin className="h-4 w-4 mr-2" />
             <span>{event.location}</span>
           </div>
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Users className="h-4 w-4 mr-2" />
-            <span>{event.attendees} attendees</span>
-          </div>
+          
         </div>
         <p className="text-sm text-muted-foreground mb-4">
           {event.description}
         </p>
-        <Button onClick={openModal} variant={event.isUpcoming ? "default" : "outline"} className="w-full">
+
+
+        {/* //pop up code  */}
+        {/* <Button onClick={openModal} variant={event.isUpcoming ? "default" : "outline"} className="w-full">
           {event.isUpcoming ? "Register Now" : "View Recap"}
-        </Button>
+        </Button> */}
+    
+
+    <Button
+  onClick={handleButtonClick}
+  variant={event.isUpcoming ? "default" : "outline"}
+  className="w-full"
+>
+  {event.isUpcoming ? "Register Now" : "View Recap"}
+</Button>
+
       </div>
     </div>
   );
