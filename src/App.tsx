@@ -13,6 +13,7 @@ import Partners from "./pages/Partners";
 import Contact from "./pages/Contact";
 // import Join from "./pages/Join";
 import NotFound from "./pages/NotFound";
+import AuthPage from "./pages/AuthPage";
 
 
 
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/blog" element={<Blog />} />
           <Route path="/partners" element={<Partners />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/auth" element={<AuthPage />} />
           
          
          
