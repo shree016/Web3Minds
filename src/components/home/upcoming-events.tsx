@@ -27,16 +27,16 @@ const handleButtonClick = () => {
 // temp code for luma
 
 const events: EventProps[] = [
-  {
-    title: "Daytona - Developers Meetup",
-    description: "An evening for AI engineers, OSS contributors & dev tool builders. Talks, conversations & great company await.",
+  // {
+  //   title: "Daytona - Developers Meetup",
+  //   description: "An evening for AI engineers, OSS contributors & dev tool builders. Talks, conversations & great company await.",
 
-    date: "April 29th, 2023",
-    time: "6:30 PM - 9:30 PM",
-    location: "Incubex INR4, Indira Nagar",
-    category: "Meetup",
-    imageSrc: event1,
-  },
+  //   date: "April 29th, 2023",
+  //   time: "6:30 PM - 9:30 PM",
+  //   location: "Incubex INR4, Indira Nagar",
+  //   category: "Meetup",
+  //   imageSrc: event1,
+  // },
 ];
 
 function EventCard({ event, openModal }: { event: EventProps; openModal: () => void }) {
