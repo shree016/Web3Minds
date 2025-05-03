@@ -17,7 +17,7 @@ const events = [
     
     image: event1,
     description: "An evening for AI engineers, OSS contributors & dev tool builders. Talks, conversations & great company await.",
-    isUpcoming: true,
+    isUpcoming: false,
   },
 ];
 
