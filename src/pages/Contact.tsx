@@ -104,8 +104,8 @@ const Contact = () => {
               />
               <ContactInfo
                 icon={<Phone className="h-5 w-5" />}
-                title="Bhuvan"
-                content="+91 9620684323"
+                title="Shrilaxmi"
+                content="+91 9945411015"
               />
             </div>
           </div>
