@@ -16,6 +16,8 @@ import Learn from "./pages/Learn";
 import Profile from "./pages/Profile";
 import Moderation from "./pages/Moderation";
 import Pricing from "./pages/Pricing";
+import Whitepapers from "./pages/Whitepapers";
+import WhitepaperDetail from "./pages/WhitepaperDetail";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +44,10 @@ const App = () => (
 
           {/* Learning */}
           <Route path="/learn" element={<Learn />} />
+
+          {/* Whitepapers */}
+          <Route path="/whitepapers" element={<Whitepapers />} />
+          <Route path="/whitepapers/:slug" element={<WhitepaperDetail />} />
 
           {/* Profile */}
           <Route path="/profile" element={<Profile />} />

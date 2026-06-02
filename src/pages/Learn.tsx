@@ -1,264 +1,243 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Brain, ArrowRight, Loader, CheckCircle, Circle, AlertCircle } from 'lucide-react'
+import { RotateCcw, BookOpen, ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import Navbar from '../components/ui/Navbar'
 import Footer from '../components/ui/Footer'
-import { generateLearningPath, type LearningTopic } from '../lib/gemini'
-import { seedTerms } from '../lib/seedData'
+import DiagnosticChat from '../components/learn/DiagnosticChat'
+import ReadinessMap from '../components/learn/ReadinessMap'
+import PersonalizedPath from '../components/learn/PersonalizedPath'
+import LessonModal from '../components/learn/LessonModal'
+import WhitepaperUnlock from '../components/learn/WhitepaperUnlock'
+import { type DiagnosticResult, type LessonNode } from '../lib/gemini'
 
-const interests = [
-  { id: 'DeFi', label: 'DeFi Explorer', emoji: '💰', desc: 'Lending, DEXes, yield farming, stablecoins', color: 'from-cyan-600 to-cyan-800' },
-  { id: 'NFTs', label: 'NFT Creator', emoji: '🎨', desc: 'Digital art, marketplaces, royalties, metadata', color: 'from-pink-600 to-pink-800' },
-  { id: 'Development', label: 'Blockchain Developer', emoji: '⚙️', desc: 'Smart contracts, Solidity, dApps, tooling', color: 'from-purple-600 to-purple-800' },
-  { id: 'Investing', label: 'Crypto Investor', emoji: '📈', desc: 'Tokenomics, market cycles, portfolio strategy', color: 'from-amber-600 to-amber-800' },
-]
+type Phase = 'diagnostic' | 'path'
 
-const categoryColors: Record<string, string> = {
-  'DeFi': 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
-  'NFTs': 'text-pink-400 bg-pink-500/10 border-pink-500/20',
-  'Core Concepts': 'text-purple-400 bg-purple-500/10 border-purple-500/20',
-  'Security': 'text-green-400 bg-green-500/10 border-green-500/20',
+function loadDiagnostic(): DiagnosticResult | null {
+  try {
+    return JSON.parse(localStorage.getItem('w3m_diagnostic') || 'null')
+  } catch {
+    return null
+  }
 }
-function getCatColor(c: string) { return categoryColors[c] || 'text-gray-400 bg-gray-500/10 border-gray-500/20' }
 
-function getViewedTerms(): string[] {
-  try { return JSON.parse(localStorage.getItem('w3m_viewed') || '[]') } catch { return [] }
+function loadCompleted(): string[] {
+  try {
+    return JSON.parse(localStorage.getItem('w3m_path_completed') || '[]')
+  } catch {
+    return []
+  }
+}
+
+const BG_LABELS: Record<string, string> = {
+  cs: 'Software Developer',
+  finance: 'Finance Professional',
+  design: 'Designer',
+  other: 'General Student',
+}
+
+const KNOWLEDGE_LABELS: Record<string, string> = {
+  none: 'Brand new to blockchain',
+  beginner: 'Heard of Bitcoin/Ethereum',
+  intermediate: 'Have used Web3 products',
+  advanced: 'Deep blockchain knowledge',
 }
 
 export default function Learn() {
-  const [selectedInterest, setSelectedInterest] = useState<string | null>(null)
-  const [path, setPath] = useState<LearningTopic[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [completedTopics, setCompletedTopics] = useState<Set<number>>(new Set())
+  const [phase, setPhase] = useState<Phase>(() => (loadDiagnostic() ? 'path' : 'diagnostic'))
+  const [diagnostic, setDiagnostic] = useState<DiagnosticResult | null>(loadDiagnostic)
+  const [completedIds, setCompletedIds] = useState<string[]>(loadCompleted)
+  const [openLesson, setOpenLesson] = useState<LessonNode | null>(null)
+  const [unlockWpSlug, setUnlockWpSlug] = useState<string | null>(null)
 
-  const viewed = getViewedTerms()
-
-  async function handleGenerate(interest: string) {
-    setSelectedInterest(interest)
-    setPath([])
-    setError('')
-    setCompletedTopics(new Set())
-    setLoading(true)
-    try {
-      const result = await generateLearningPath(interest, viewed)
-      setPath(result)
-    } catch {
-      setError('Failed to generate learning path. Please check your Gemini API key.')
-    } finally {
-      setLoading(false)
-    }
+  function handleDiagnosticComplete(d: DiagnosticResult) {
+    setDiagnostic(d)
+    localStorage.setItem('w3m_diagnostic', JSON.stringify(d))
+    setPhase('path')
   }
 
-  function toggleComplete(i: number) {
-    setCompletedTopics((prev) => {
-      const next = new Set(prev)
-      if (next.has(i)) next.delete(i)
-      else next.add(i)
-      return next
-    })
+  function handleLessonComplete(lessonId: string) {
+    const next = [...new Set([...completedIds, lessonId])]
+    setCompletedIds(next)
+    localStorage.setItem('w3m_path_completed', JSON.stringify(next))
+    setOpenLesson(null)
   }
 
-  const progress = path.length > 0 ? Math.round((completedTopics.size / path.length) * 100) : 0
-
-  function findRelatedTerm(topic: string) {
-    const t = topic.toLowerCase()
-    return seedTerms.find((s) =>
-      s.name.toLowerCase().includes(t) ||
-      t.includes(s.name.toLowerCase()) ||
-      s.slug === t.replace(/\s+/g, '-')
-    )
+  function handleReset() {
+    if (!confirm('Reset your learning path? Your progress will be cleared.')) return
+    localStorage.removeItem('w3m_diagnostic')
+    localStorage.removeItem('w3m_path')
+    localStorage.removeItem('w3m_path_completed')
+    setDiagnostic(null)
+    setCompletedIds([])
+    setPhase('diagnostic')
   }
+
+  const studentBackground =
+    diagnostic?.background === 'cs'
+      ? 'software developer'
+      : diagnostic?.background === 'finance'
+      ? 'finance professional'
+      : diagnostic?.background === 'design'
+      ? 'designer'
+      : 'general student'
 
   return (
     <div className="min-h-screen bg-mesh">
       <Navbar />
 
-      <section className="pt-28 pb-12 px-4 text-center">
+      {/* Hero */}
+      <section className="pt-28 pb-10 px-4 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <p className="text-sm font-semibold text-purple-400 uppercase tracking-widest mb-3">Learning Path</p>
+          <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full bg-purple-600/10 border border-purple-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+            <span className="text-xs font-semibold text-purple-400 uppercase tracking-widest">
+              RAG-Powered Learning
+            </span>
+          </div>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Your Web3 <span className="gradient-text">Journey</span>
           </h1>
           <p className="text-gray-400 text-lg max-w-xl mx-auto">
-            Choose your interest area and get a personalized AI-generated roadmap of what to learn and in what order.
+            {phase === 'diagnostic'
+              ? 'Answer a few quick questions to get a learning path built specifically for you.'
+              : 'Your personalised path to reading the original blockchain whitepapers.'}
           </p>
         </motion.div>
       </section>
 
-      {/* Interest Selector */}
-      <section className="px-4 mb-12">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-lg font-bold text-white mb-6 text-center">What do you want to focus on?</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {interests.map((interest, i) => (
-              <motion.button
-                key={interest.id}
-                onClick={() => handleGenerate(interest.id)}
-                className={`glass-card rounded-2xl p-6 text-left transition-all ${
-                  selectedInterest === interest.id ? 'border-purple-500/50 bg-purple-600/10' : ''
-                }`}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 }}
-                whileHover={{ y: -2 }}
-                disabled={loading}
-              >
-                <div className="text-3xl mb-3">{interest.emoji}</div>
-                <div className="font-bold text-white mb-1">{interest.label}</div>
-                <div className="text-xs text-gray-400">{interest.desc}</div>
-              </motion.button>
-            ))}
-          </div>
-        </div>
-      </section>
+      <div className="px-4 pb-24 max-w-5xl mx-auto">
+        <AnimatePresence mode="wait">
+          {phase === 'diagnostic' ? (
+            <motion.div
+              key="diagnostic"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              className="max-w-2xl mx-auto"
+            >
+              <p className="text-center text-sm text-gray-600 mb-6">
+                Takes about 2 minutes · Personalises your entire learning path · Can skip any time
+              </p>
+              <DiagnosticChat onComplete={handleDiagnosticComplete} />
 
-      {/* Loading */}
-      <AnimatePresence>
-        {loading && (
-          <motion.section
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="px-4 mb-12"
-          >
-            <div className="max-w-2xl mx-auto text-center">
-              <div className="glass-card rounded-2xl p-10">
-                <Loader size={32} className="text-purple-400 animate-spin mx-auto mb-4" />
-                <p className="text-gray-400 mb-2">Generating your personalized learning path...</p>
-                <div className="flex items-center justify-center gap-1">
-                  <span className="typing-dot" />
-                  <span className="typing-dot" />
-                  <span className="typing-dot" />
+              {/* Manual interest selector fallback */}
+              <div className="mt-8">
+                <p className="text-center text-xs text-gray-600 mb-4">
+                  Or jump straight in with a preset path:
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {[
+                    { id: 'development', label: 'Builder', emoji: '⚙️', bg: 'finance' as const },
+                    { id: 'defi', label: 'DeFi', emoji: '💰', bg: 'other' as const },
+                    { id: 'nft', label: 'NFTs', emoji: '🎨', bg: 'design' as const },
+                    { id: 'investing', label: 'Investing', emoji: '📈', bg: 'finance' as const },
+                  ].map((preset) => (
+                    <button
+                      key={preset.id}
+                      onClick={() =>
+                        handleDiagnosticComplete({
+                          background: preset.bg,
+                          prior_knowledge: 'beginner',
+                          interest_area: preset.id as DiagnosticResult['interest_area'],
+                          readiness: { bitcoin_wp: 0.15, ethereum_wp: 0.05, defi_wp: 0.0 },
+                          recommended_start: 'what-problem-bitcoin-solves',
+                        })
+                      }
+                      className="glass-card rounded-xl p-4 text-center hover:border-purple-500/30 transition-all"
+                    >
+                      <div className="text-2xl mb-1">{preset.emoji}</div>
+                      <div className="text-xs font-semibold text-white">{preset.label}</div>
+                    </button>
+                  ))}
                 </div>
               </div>
-            </div>
-          </motion.section>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="path"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="space-y-6"
+            >
+              {/* Top info row */}
+              {diagnostic && (
+                <div className="grid md:grid-cols-3 gap-5">
+                  {/* Readiness map */}
+                  <div className="md:col-span-2">
+                    <ReadinessMap readiness={diagnostic.readiness} />
+                  </div>
 
-      {/* Error */}
-      <AnimatePresence>
-        {error && !loading && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 mb-12 max-w-2xl mx-auto">
-            <div className="flex items-center gap-2 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm">
-              <AlertCircle size={16} />
-              {error}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Learning Path */}
-      <AnimatePresence>
-        {path.length > 0 && !loading && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="px-4 pb-24"
-          >
-            <div className="max-w-2xl mx-auto">
-              <div className="glass-card rounded-2xl p-6 mb-6">
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="font-bold text-white flex items-center gap-2">
-                    <Brain size={18} className="text-purple-400" />
-                    Your {selectedInterest} Learning Path
-                  </h2>
-                  <span className="text-sm text-gray-400">{completedTopics.size}/{path.length} done</span>
-                </div>
-                <div className="w-full bg-white/5 rounded-full h-2">
-                  <motion.div
-                    className="h-2 rounded-full bg-gradient-to-r from-purple-600 to-cyan-500"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                    transition={{ duration: 0.5 }}
-                  />
-                </div>
-                <div className="text-xs text-gray-500 mt-2">{progress}% complete</div>
-              </div>
-
-              <div className="relative">
-                {/* Timeline line */}
-                <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-gradient-to-b from-purple-600 to-cyan-500 opacity-20" />
-
-                <div className="space-y-4">
-                  {path.map((topic, i) => {
-                    const done = completedTopics.has(i)
-                    const relatedTerm = findRelatedTerm(topic.topic)
-
-                    return (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, x: -16 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.05 }}
-                        className={`glass-card rounded-xl p-5 ml-12 relative transition-all ${done ? 'opacity-60' : ''}`}
-                      >
-                        {/* Node */}
-                        <button
-                          onClick={() => toggleComplete(i)}
-                          className="absolute -left-9 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all bg-[#0A0B0F]"
-                          style={{ borderColor: done ? '#7C3AED' : 'rgba(255,255,255,0.1)' }}
-                        >
-                          {done
-                            ? <CheckCircle size={16} className="text-purple-400" />
-                            : <Circle size={16} className="text-gray-600" />
-                          }
-                        </button>
-
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1 flex-wrap">
-                              <span className="text-xs font-bold text-gray-500">#{i + 1}</span>
-                              <h3 className={`font-bold text-sm ${done ? 'line-through text-gray-500' : 'text-white'}`}>
-                                {topic.topic}
-                              </h3>
-                              {topic.category && (
-                                <span className={`text-xs px-2 py-0.5 rounded-full border ${getCatColor(topic.category)}`}>
-                                  {topic.category}
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-xs text-gray-400 leading-relaxed">{topic.description}</p>
-                          </div>
-
-                          {relatedTerm && (
-                            <Link to={`/glossary/${relatedTerm.slug}`} className="flex-shrink-0">
-                              <span className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1 whitespace-nowrap">
-                                Read <ArrowRight size={11} />
-                              </span>
-                            </Link>
-                          )}
+                  {/* Profile card */}
+                  <div className="glass-card rounded-2xl p-5 flex flex-col gap-4">
+                    <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                      <BookOpen size={15} className="text-purple-400" />
+                      Your Profile
+                    </h3>
+                    <div className="space-y-2 flex-1">
+                      {[
+                        ['Background', BG_LABELS[diagnostic.background] ?? diagnostic.background],
+                        ['Knowledge', KNOWLEDGE_LABELS[diagnostic.prior_knowledge] ?? diagnostic.prior_knowledge],
+                        ['Focus area', diagnostic.interest_area],
+                      ].map(([label, value]) => (
+                        <div key={label} className="flex items-start justify-between gap-2 text-xs">
+                          <span className="text-gray-500 flex-shrink-0">{label}</span>
+                          <span className="text-gray-300 capitalize text-right">{value}</span>
                         </div>
-                      </motion.div>
-                    )
-                  })}
+                      ))}
+                    </div>
+                    <div className="flex flex-col gap-2 pt-3 border-t border-white/5">
+                      <Link
+                        to="/whitepapers"
+                        className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1 transition-colors"
+                      >
+                        View whitepaper library <ArrowRight size={11} />
+                      </Link>
+                      <button
+                        onClick={handleReset}
+                        className="text-xs text-gray-600 hover:text-gray-400 flex items-center gap-1 transition-colors"
+                      >
+                        <RotateCcw size={11} /> Restart diagnostic
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-
-              {progress === 100 && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="mt-8 p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center"
-                >
-                  <div className="text-4xl mb-3">🎉</div>
-                  <h3 className="text-lg font-bold text-emerald-300 mb-2">Path Complete!</h3>
-                  <p className="text-sm text-gray-400 mb-4">You've finished your {selectedInterest} learning path. Time to explore more!</p>
-                  <Link to="/glossary" className="btn-primary text-sm">Explore the Glossary</Link>
-                </motion.div>
               )}
-            </div>
-          </motion.section>
+
+              {/* Personalized path */}
+              {diagnostic && (
+                <PersonalizedPath
+                  diagnostic={diagnostic}
+                  completedIds={completedIds}
+                  onOpenLesson={setOpenLesson}
+                  onUnlock={setUnlockWpSlug}
+                />
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Modals */}
+      <AnimatePresence>
+        {openLesson && (
+          <LessonModal
+            key={openLesson.id}
+            lesson={openLesson}
+            onClose={() => setOpenLesson(null)}
+            onComplete={handleLessonComplete}
+            studentBackground={studentBackground}
+          />
+        )}
+        {unlockWpSlug && (
+          <WhitepaperUnlock
+            key={unlockWpSlug}
+            wpSlug={unlockWpSlug}
+            onClose={() => setUnlockWpSlug(null)}
+          />
         )}
       </AnimatePresence>
-
-      {!selectedInterest && !loading && (
-        <div className="text-center py-12 text-gray-600 text-sm">
-          ↑ Select an interest area above to generate your path
-        </div>
-      )}
 
       <Footer />
     </div>

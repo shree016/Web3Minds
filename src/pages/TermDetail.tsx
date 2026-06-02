@@ -3,12 +3,15 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft, ThumbsUp, ThumbsDown, Brain, Zap,
-  BookOpen, ChevronRight, AlertCircle, Check, X
+  BookOpen, ChevronRight, AlertCircle, Check, X, Sparkles, ExternalLink
 } from 'lucide-react'
+import { Link as RouterLink } from 'react-router-dom'
 import Navbar from '../components/ui/Navbar'
 import Footer from '../components/ui/Footer'
 import { seedTerms } from '../lib/seedData'
 import { explainTerm, generateQuiz, type ExplainStyle, type QuizQuestion } from '../lib/gemini'
+import { askWhitepaper, type RAGAnswer } from '../lib/rag'
+import { termToWhitepaperMap } from '../lib/seedWhitepapers'
 
 const categoryColors: Record<string, string> = {
   'Core Concepts': 'text-purple-400 bg-purple-500/10 border-purple-500/20',
@@ -52,6 +55,8 @@ export default function TermDetail() {
 
   // AI Explainer state
   const [explainStyle, setExplainStyle] = useState<ExplainStyle>('beginner')
+  const [ragAnswer, setRagAnswer] = useState<RAGAnswer | null>(null)
+  const relatedWpSlug = term ? termToWhitepaperMap[term.slug] : undefined
   const [aiResponse, setAiResponse] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
   const [aiError, setAiError] = useState('')
@@ -107,14 +112,20 @@ export default function TermDetail() {
     }
     setAiLoading(true)
     setAiResponse('')
+    setRagAnswer(null)
     setAiError('')
     try {
-      const text = await explainTerm(term.name, term.short_definition, explainStyle)
-      setAiResponse(text)
+      if (explainStyle === 'whitepaper') {
+        const result = await askWhitepaper(`Explain "${term.name}" — ${term.short_definition}`)
+        setRagAnswer(result)
+      } else {
+        const text = await explainTerm(term.name, term.short_definition, explainStyle)
+        setAiResponse(text)
+      }
       incrementAIUsage()
       setAiUsed(getAIUsageToday())
-    } catch (e) {
-      setAiError('AI explanation failed. Please check your Gemini API key in .env and try again.')
+    } catch {
+      setAiError('AI explanation failed. Please check your API key configuration.')
     } finally {
       setAiLoading(false)
     }
@@ -234,11 +245,12 @@ export default function TermDetail() {
               { value: 'beginner', label: "Like I'm 5" },
               { value: 'technical', label: 'Technical' },
               { value: 'code', label: 'With code' },
+              { value: 'whitepaper', label: 'From the Whitepaper ✨' },
             ] as { value: ExplainStyle; label: string }[]).map((s) => (
               <button
                 key={s.value}
-                onClick={() => setExplainStyle(s.value)}
-                className={`category-pill ${explainStyle === s.value ? 'active' : ''}`}
+                onClick={() => { setExplainStyle(s.value); setAiResponse(''); setRagAnswer(null) }}
+                className={`category-pill ${explainStyle === s.value ? 'active' : ''} ${s.value === 'whitepaper' ? 'border-purple-500/40 text-purple-300' : ''}`}
               >
                 {s.label}
               </button>
@@ -276,6 +288,39 @@ export default function TermDetail() {
                   </div>
                   <p className="text-sm text-gray-200 leading-relaxed">{aiResponse}</p>
                 </div>
+              </motion.div>
+            )}
+            {ragAnswer && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 space-y-3"
+              >
+                <div className="bg-purple-600/10 border border-purple-500/20 rounded-xl p-5">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Sparkles size={10} className="text-white" />
+                    </div>
+                    <p className="text-sm text-gray-200 leading-relaxed">{ragAnswer.answer}</p>
+                  </div>
+                </div>
+                {ragAnswer.sources.length > 0 && (
+                  <div className="text-xs text-gray-600 space-y-1 px-1">
+                    <p className="font-semibold text-gray-500">Sources:</p>
+                    {ragAnswer.sources.map((s, i) => (
+                      <p key={i}>• {s.section} ({Math.round(s.similarity * 100)}% match)</p>
+                    ))}
+                  </div>
+                )}
+                {relatedWpSlug && (
+                  <RouterLink
+                    to={`/whitepapers/${relatedWpSlug}`}
+                    className="inline-flex items-center gap-1.5 text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                  >
+                    <ExternalLink size={11} />
+                    Read Full Whitepaper →
+                  </RouterLink>
+                )}
               </motion.div>
             )}
             {aiError && (

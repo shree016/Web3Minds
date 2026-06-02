@@ -5,6 +5,7 @@ import { User, Award, ThumbsUp, BookOpen, Clock, Star, ArrowRight } from 'lucide
 import Navbar from '../components/ui/Navbar'
 import Footer from '../components/ui/Footer'
 import { seedTerms } from '../lib/seedData'
+import { seedWhitepapers, getWPProgress } from '../lib/seedWhitepapers'
 
 const AI_LIMIT = 5
 const STORAGE_KEY = 'w3m_ai_usage'
@@ -203,6 +204,51 @@ export default function Profile() {
             </div>
           </motion.div>
         )}
+
+        {/* Whitepaper Journey */}
+        <motion.div className="glass-card rounded-2xl p-6 mt-6" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28 }}>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="font-bold text-white flex items-center gap-2">
+              <BookOpen size={16} className="text-cyan-400" /> Whitepaper Journey
+            </h2>
+            <Link to="/whitepapers" className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1 transition-colors">
+              View Library <ArrowRight size={11} />
+            </Link>
+          </div>
+          <div className="space-y-3">
+            {(() => {
+              const progress = getWPProgress()
+              const levelLabels: Record<string, string> = { surface: 'Surface', structural: 'Structural', deep: 'Deep', mastery: 'Mastery' }
+              const levelWidths: Record<string, string> = { surface: '25%', structural: '50%', deep: '75%', mastery: '100%' }
+              return seedWhitepapers.slice(0, 4).map((wp) => {
+                const entry = progress[wp.slug]
+                return (
+                  <div key={wp.slug} className="flex items-center gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <Link to={`/whitepapers/${wp.slug}`} className="text-xs text-gray-300 hover:text-white transition-colors truncate">
+                          {wp.title.split(':')[0]}
+                        </Link>
+                        <span className={`text-xs flex-shrink-0 ml-2 ${entry ? 'text-purple-400' : 'text-gray-600'}`}>
+                          {entry ? levelLabels[entry.level] : 'Not started'}
+                        </span>
+                      </div>
+                      <div className="w-full h-1.5 rounded-full bg-white/5">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-purple-600 to-cyan-500 transition-all"
+                          style={{ width: entry ? levelWidths[entry.level] : '0%' }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )
+              })
+            })()}
+          </div>
+          <Link to="/learn" className="mt-4 text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors">
+            Continue your learning path <ArrowRight size={11} />
+          </Link>
+        </motion.div>
 
         {/* Contributions */}
         {isDemo && (
